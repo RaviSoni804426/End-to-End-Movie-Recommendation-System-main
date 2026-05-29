@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}CineMatch - Advanced Search{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Advanced Search</h1>
+    <p>Find movies with advanced filters</p>
+</div>
+
+<div class="search-filters">
+    <div class="filter-card">
+        <label for="movieTitle">Movie Title</label>
+        <input type="text" id="movieTitle" class="filter-input" placeholder="Search by title...">
+    </div>
+    
+    <div class="filter-card">
+        <label for="genreSelect">Genre</label>
+        <select id="genreSelect" class="filter-input">
+            <option value="">All Genres</option>
+            <option value="Action">Action</option>
+            <option value="Comedy">Comedy</option>
+            <option value="Drama">Drama</option>
+            <option value="Sci-Fi">Sci-Fi</option>
+            <option value="Horror">Horror</option>
+            <option value="Romance">Romance</option>
+            <option value="Thriller">Thriller</option>
+        </select>
+    </div>
+    
+    <div class="filter-card">
+        <label for="yearRange">Year Range</label>
+        <input type="number" id="yearFrom" class="filter-input" placeholder="From" min="1900" max="2024">
+        <input type="number" id="yearTo" class="filter-input" placeholder="To" min="1900" max="2024">
+    </div>
+</div>
+
+<button id="applyFiltersBtn" class="btn btn-primary">Apply Filters</button>
+
+<div id="searchResults"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
+{% endblock %}
