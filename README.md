@@ -1,3 +1,15 @@
+# ---
+# title: Movie Recommendation System
+# emoji: 🎬
+# colorFrom: blue
+# colorTo: purple
+# sdk: docker
+# sdk_version: "1.0"
+# python_version: "3.9"
+# app_file: run.py
+# pinned: false
+# ---
+
 # CineMatch — End-to-End Movie Recommendation System
 
 This repository contains a lightweight Flask app that provides movie recommendations based on a CSV dataset. The project is prepared to run locally, via Docker, and to be deployed to a Hugging Face Space (Docker).
