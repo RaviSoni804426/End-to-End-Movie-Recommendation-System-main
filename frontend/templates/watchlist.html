@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}CineMatch - My Watchlist{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>My Watchlist</h1>
+    <p>Keep track of movies you want to watch</p>
+</div>
+
+<div class="watchlist-container">
+    <div id="watchlistItems"></div>
+</div>
+
+<div class="empty-state" id="emptyState">
+    <i class="fas fa-bookmark"></i>
+    <h3>Your watchlist is empty</h3>
+    <p>Start adding movies to your watchlist from recommendations</p>
+    <a href="/" class="btn btn-primary">Find Movies</a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/watchlist.js') }}"></script>
+{% endblock %}

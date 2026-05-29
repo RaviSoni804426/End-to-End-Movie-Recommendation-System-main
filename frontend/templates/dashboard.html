@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}CineMatch - Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Analytics Dashboard</h1>
+    <p>Track recommendations and user engagement</p>
+</div>
+
+<div class="dashboard-grid">
+    <div class="metric-card">
+        <div class="metric-icon">
+            <i class="fas fa-film"></i>
+        </div>
+        <div class="metric-content">
+            <h3>Total Movies</h3>
+            <p class="metric-value" id="totalMovies">{{ movie_stats.get('total_movies', 0) }}</p>
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="metric-content">
+            <h3>Average Rating</h3>
+            <p class="metric-value" id="avgRating">{{ "%.1f"|format(movie_stats.get('average_rating', 0)) }}</p>
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <div class="metric-content">
+            <h3>Total Searches</h3>
+            <p class="metric-value" id="totalSearches">0</p>
+        </div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-icon">
+            <i class="fas fa-thumbs-up"></i>
+        </div>
+        <div class="metric-content">
+            <h3>Engagement Rate</h3>
+            <p class="metric-value" id="engagementRate">0%</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-section">
+    <h2>Recommendation Trends</h2>
+    <div id="recommendationChart"></div>
+</div>
+
+<div class="dashboard-section">
+    <h2>Top Searched Movies</h2>
+    <div id="topSearches"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+{% endblock %}
