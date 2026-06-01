@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}CineMatch - {{ movie.movie_title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ movie.movie_title }}</h1>
+    <p>AI Content Profile & Similarity Matchmaking</p>
+</div>
+
+<div class="dashboard-section card" style="margin-bottom: 2rem;">
+    <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: start;">
+        <div style="flex: 1; min-width: 300px;">
+            <h2 style="color: var(--primary-light); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                <i class="fas fa-info-circle"></i> Movie Profile
+            </h2>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;">
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 10px 0; font-weight: 600; color: var(--text-secondary); width: 35%;">Director</td>
+                    <td style="padding: 10px 0; color: var(--text-primary);">{{ movie.director_name or 'Unknown' }}</td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 10px 0; font-weight: 600; color: var(--text-secondary);">Genres</td>
+                    <td style="padding: 10px 0;">
+                        {% if movie.genres %}
+                            {% for genre in movie.genres.split(' ') %}
+                                <span class="rec-score" style="display: inline-block; background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 4px; padding: 2px 8px; margin-right: 5px; margin-bottom: 5px; font-size: 12px;">{{ genre }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <span style="color: var(--text-tertiary);">N/A</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 10px 0; font-weight: 600; color: var(--text-secondary);">Top Cast</td>
+                    <td style="padding: 10px 0; color: var(--text-primary);">
+                        {% set cast = [] %}
+                        {% if movie.actor_1_name and movie.actor_1_name != 'unknown' %}{% set _ = cast.append(movie.actor_1_name) %}{% endif %}
+                        {% if movie.actor_2_name and movie.actor_2_name != 'unknown' %}{% set _ = cast.append(movie.actor_2_name) %}{% endif %}
+                        {% if movie.actor_3_name and movie.actor_3_name != 'unknown' %}{% set _ = cast.append(movie.actor_3_name) %}{% endif %}
+                        {{ cast|join(', ') or 'Unknown' }}
+                    </td>
+                </tr>
+            </table>
+            
+            <button class="btn btn-primary" onclick="addToWatchlist('{{ movie.movie_title }}')" style="width: 100%;">
+                <i class="fas fa-bookmark"></i> Save to Watchlist
+            </button>
+        </div>
+        
+        <div style="flex: 1; min-width: 300px; padding: 1.5rem; background: rgba(255,255,255,0.01); border-left: 2px solid var(--primary-color); border-radius: 4px;">
+            <h3 style="margin-top: 0; color: var(--accent-light);">NLP Meta Combination</h3>
+            <p style="font-size: 14px; line-height: 1.6; color: var(--text-secondary); font-style: italic;">
+                "{{ movie.comb or 'No metadata vector available.' }}"
+            </p>
+            <p style="font-size: 12px; color: var(--text-tertiary); margin-top: 1rem;">
+                Parsed and mapped to high-dimensional feature spaces for vector space comparison.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-section card">
+    <h2 style="margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; color: var(--primary-light);">
+        <i class="fas fa-wand-magic-sparkles"></i> Recommendations Based on "{{ movie.movie_title }}"
+    </h2>
+    
+    {% if recommendations %}
+        <div class="recommendations-grid">
+            {% for rec in recommendations %}
+                <div class="recommendation-item">
+                    <div class="rec-rank">#{{ rec.rank }}</div>
+                    <div class="rec-title">{{ rec.title }}</div>
+                    {% if rec.similarity_score is not none %}
+                        {% set score_percent = (rec.similarity_score * 100)|round(1) %}
+                        <div class="rec-score" style="margin-bottom: 12px;">Match: {{ score_percent }}%</div>
+                        <div style="background: rgba(255,255,255,0.05); border-radius: 10px; height: 6px; width: 100%; margin-bottom: 15px; overflow: hidden;">
+                            <div style="background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); width: {{ score_percent }}%; height: 100%;"></div>
+                        </div>
+                    {% endif %}
+                    <div style="display: flex; gap: 8px; justify-content: center;">
+                        <a href="/movie/{{ rec.title|urlencode }}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 13px;">Details</a>
+                        <button class="btn btn-secondary" onclick="addToWatchlist('{{ rec.title }}')" style="padding: 6px 12px; font-size: 13px;">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center; padding: 2rem; color: var(--text-tertiary);">No recommendations found for this movie.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function addToWatchlist(movieTitle) {
+    let watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
+    
+    if (!watchlist.includes(movieTitle)) {
+        watchlist.push(movieTitle);
+        localStorage.setItem('watchlist', JSON.stringify(watchlist));
+        showSuccess(document.body, `Added "${movieTitle}" to watchlist`);
+    } else {
+        showError(document.body, `"${movieTitle}" is already in your watchlist`);
+    }
+}
+</script>
+{% endblock %}

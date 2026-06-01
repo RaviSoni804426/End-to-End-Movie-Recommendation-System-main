@@ -16,6 +16,13 @@ def format_recommendations(titles, scores=None):
         })
     return recommendations
         
+def flatten_list(nested_list):
+    """
+    Flatten a nested list of lists.
+    
+    Args:
+        nested_list: Nested list to flatten
+        
     Returns:
         List: Flattened list
     """

@@ -23,36 +23,4 @@
     // Initialize with suggestions
     const suggestions = {{ suggestions|tojson }};
 </script>
-<script>
-// Simple client-side handler to call recommendations API
-document.getElementById('searchBtn').addEventListener('click', async () => {
-    const q = document.getElementById('movieSearch').value.trim();
-    const resultEl = document.getElementById('recommendations-result');
-    resultEl.innerHTML = '';
-    if (!q) { resultEl.innerHTML = '<div class="card">Please enter a movie title.</div>'; return }
-
-    try {
-        const resp = await fetch('/recommendations', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ movie_name: q })
-        });
-        const data = await resp.json();
-        if (!data.success) {
-            resultEl.innerHTML = `<div class="card">${data.message}</div>`;
-            return
-        }
-        if (!data.recommendations || data.recommendations.length === 0) {
-            resultEl.innerHTML = '<div class="card">No recommendations found.</div>';
-            return
-        }
-        const list = document.createElement('div');
-        list.className = 'card';
-        list.innerHTML = '<strong>Recommendations:</strong>' + '<div>' + data.recommendations.map(r=>`<div class="result-item">${r.get('movie_title') || r.movie_title || r.title || r}</div>`).join('') + '</div>';
-        resultEl.appendChild(list);
-    } catch (e) {
-        resultEl.innerHTML = '<div class="card">Error fetching recommendations.</div>';
-    }
-});
-</script>
 {% endblock %}
